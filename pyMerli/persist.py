@@ -38,7 +38,7 @@ class Es:
     """
     """
 
-    _es=Basic
+    _es=Basics
 
     @classmethod
     def conn(cls, *args,**kwargs):
@@ -65,7 +65,7 @@ class Es:
         cls._offer=offer
         if pre_save_fn:
             cls._offer=pre_save_fn(offer)
-    
+
     @classmethod
     def save(cls):
         """
