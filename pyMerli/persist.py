@@ -1,9 +1,11 @@
 from custodi.smallBoto import S3Bucket
+from custodi.smallElastic import Basics
+
+
 
 class S3:
     """
     """
-
     _bucket=""
     _s3=S3Bucket
 
@@ -31,3 +33,41 @@ class S3:
         self.s3.uploadJson(self.merli.raw, getattr(self.merli, key_field))
         self.postSave.message="[+] S3 Persist Bucket: {} | Key: {}".format(
                                                     self._bucket, key_field)
+
+class Es:
+    """
+    """
+
+    _es=Basic
+
+    @classmethod
+    def conn(cls, *args,**kwargs):
+        """
+        """
+        cls._es.setConn(*args,**kwargs)
+
+    @classmethod
+    def setIndex(cls, index):
+        """
+        """
+        cls._es.setIndex(index)
+
+    @classmethod
+    def setDocType(cls, doc_type):
+        """
+        """
+        cls._es.setDoctType(doc_type)
+
+    @classmethod
+    def setOffer(cls, offer, pre_save_fn=None):
+        """
+        """
+        cls._offer=offer
+        if pre_save_fn:
+            cls._offer=pre_save_fn(offer)
+    
+    @classmethod
+    def save(cls):
+        """
+        """
+        cls._es.save(cls._offer)
