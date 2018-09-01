@@ -26,7 +26,7 @@ class Parser:
     def __init__(self, raw_obj):
         """
         """
-        self._raw=raw_obj
+        self.raw=raw_obj
         self._process()
 
     def _process(self):
@@ -43,8 +43,14 @@ class Parser:
             self._fields.append(key)
             self._fields_count+=1
 
+    @property
+    def toDict(self):
+        """
+        """
+        return self.__dict__
 
-class MerliOffer:
+
+class MerliOffer(Parser):
     """
     """
     def __init__(self, raw_obj):

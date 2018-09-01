@@ -1,3 +1,4 @@
+from objects import MerliOffer
 from custodi.smallBoto import S3Bucket
 from custodi.smallElastic import Basics
 
@@ -24,13 +25,13 @@ class S3:
     def __init__(self, merliObj):
         """
         """
-        self.merli=merliObj
+        self.merli=MerliOffer(merliObj)
         self.s3=self._s3(self._bucket)
 
     def save(self, key_field):
         """
         """
-        self.s3.uploadJson(self.merli.raw, getattr(self.merli, key_field))
+        self.s3.uploadJson(self.merli.toDict, getattr(self.merli, key_field))
         self.postSave.message="[+] S3 Persist Bucket: {} | Key: {}".format(
                                                     self._bucket, key_field)
 
