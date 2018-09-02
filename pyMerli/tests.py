@@ -102,12 +102,11 @@ class Objects(unittest.TestCase):
     def setUp(self):
         """
         """
-        self.obj=MerliOffer(RAW_OBJ)
+        self.offer=MerliOffer(RAW_OBJ)
 
     def test_offer(self):
         """
         """
-        self.offer=Offer(self.obj)
         print(self.offer)
 
 
