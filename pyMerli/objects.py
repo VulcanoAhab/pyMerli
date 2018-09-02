@@ -73,7 +73,7 @@ class MerliOffer(Parser):
             value=attr["value_name"]
             setattr(self, key, value)
             attrs.append(key)
-        return return "|".join(sorted(attrs))
+        return "|".join(sorted(attrs))
 
     def site_id_parser(self):
         """
