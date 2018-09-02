@@ -5,10 +5,10 @@ import unittest
 from kafka.errors import KafkaError
 from kafka import KafkaProducer,KafkaConsumer
 
-from pyMerli.config import FromFile
-from pyMerli.search import Request
-from pyMerli.objects import MerliOffer
-from pyMerli.extras.samples import RAW_OBJ
+from config import FromFile
+from search import Request
+from objects import MerliOffer
+from extras.samples import RAW_OBJ
 
 
 class SearchRequest(unittest.TestCase):
@@ -112,5 +112,5 @@ class Objects(unittest.TestCase):
 
 
 
-    if __name__ == "__main__":
-        unittest.main()
+if __name__ == "__main__":
+    unittest.main()

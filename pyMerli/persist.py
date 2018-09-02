@@ -1,4 +1,4 @@
-from .objects import MerliOffer
+from objects import MerliOffer
 from custodi.smallBoto import S3Bucket
 from custodi.smallElastic import Basics
 
