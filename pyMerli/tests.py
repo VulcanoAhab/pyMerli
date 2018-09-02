@@ -2,10 +2,13 @@ import json
 import yaml
 import time
 import unittest
-from search import Request
-from config import FromFile
-from kafka import KafkaProducer,KafkaConsumer
 from kafka.errors import KafkaError
+from kafka import KafkaProducer,KafkaConsumer
+
+from pyMerli.config import FromFile
+from pyMerli.search import Request
+from pyMerli.objects import MerliOffer
+from pyMerli.extras.samples import RAW_OBJ
 
 
 class SearchRequest(unittest.TestCase):
@@ -16,7 +19,7 @@ class SearchRequest(unittest.TestCase):
         """
         """
         #kafka send job test
-        self.remote_config=FromFile("config_dev.yaml").settings
+        self.remote_config=FromFile("pyMerli/extras/config_dev.yml").settings
 
         #search test
         self.merli=Request("tv box", "MLB", 1000, 0)
@@ -92,6 +95,21 @@ class SearchRequest(unittest.TestCase):
         for msg in consumer:
             print("[+] Received: {}".format(msg.value.decode()))
             print(("."*75)+"\n")
+
+class Objects(unittest.TestCase):
+    """
+    """
+    def setUp(self):
+        """
+        """
+        self.obj=MerliOffer(RAW_OBJ)
+
+    def test_offer(self):
+        """
+        """
+        self.offer=Offer(self.obj)
+        print(self.offer)
+
 
 
     if __name__ == "__main__":

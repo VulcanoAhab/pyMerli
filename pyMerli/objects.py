@@ -1,4 +1,5 @@
 
+import re
 import string
 from datetime import datetime
 from dateutil.parser import parse as date_parse
@@ -7,9 +8,8 @@ class Parser:
     """
     """
     _puncs=list(string.punctuation)
-    _puncs_no
     _cloud=re.compile("([^{}\s]+[\S]+[^{}\s]+)|([\w\d]+)".format(
-                                _puncs_no, _puncs_no,_puncs_no), re.M)
+                                            _puncs, _puncs), re.M)
     @classmethod
     def world_list(cls, text_in):
         """
@@ -34,7 +34,7 @@ class Parser:
         """
         self._fields=[]
         self._fields_count=0
-        for key,value in self._raw.items():
+        for key,value in self.raw.items():
             try:
                 parsed=getattr(self, key+"_parser")(value)
                 setattr(self, key, parsed)
@@ -57,6 +57,11 @@ class MerliOffer(Parser):
         """
         """
         super().__init__(raw_obj)
+
+    def __repr__(self):
+        """
+        """
+        return "{}:{}".format(self.__name__, self.id)
 
     def title_parser(self):
         """
@@ -132,7 +137,7 @@ class MerliOffer(Parser):
         ships=self.raw["shipping"]
         self.free_shipping=ships["free_shipping"]
         self.shipping_mode=ships["mode"]
-        return str(self.free_shipping)+|+self.shipping_mode
+        return str(self.free_shipping)+"|"+self.shipping_mode
 
     def seller_address_parser(self):
         """
@@ -217,7 +222,7 @@ class MerliQuestion(Parser):
         answer_obj=self.raw["answer"]
         answer_obj["status"]=answer_obj["status"].lower()
         answer_obj["date_created"]=date_parse(answer_obj["date_created"])
-        answer_obj=["text_cloud"]=self.world_list(answer_obj["text"])
+        answer_obj["text_cloud"]=self.world_list(answer_obj["text"])
         return answer_obj
 
     def text_parser(self):
