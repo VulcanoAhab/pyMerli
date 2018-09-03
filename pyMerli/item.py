@@ -13,6 +13,7 @@ class Offer:
                      "items/{item_id}/description"
     _qa_url="https://api.mercadolibre.com/questions/"\
             "search?item_id={item_id}&offset={offset}"
+    _categories_url="http://api.mercadolibre.com/categories/{category_id}"
 
     @classmethod
     def description(cls, item_id):
@@ -38,3 +39,13 @@ class Offer:
             for question in jsonResponse["questions"]:yield question
             offset+=limit
             if offset > limit:break
+
+    @classmethod
+    def categories(cls, category_id):
+        """
+        """
+        _url=cls._categories_url.format(category_id=category_id)
+        response=requests.get(_url, headers=cls._headers)
+        if response.status_code in [404,]:return {"error":"not_found"}
+        response.raise_for_status()
+        return response.json()

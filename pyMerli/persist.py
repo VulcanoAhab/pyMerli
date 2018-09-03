@@ -48,6 +48,12 @@ class Es:
         cls._es.setConn(*args,**kwargs)
 
     @classmethod
+    def create_schema(cls):
+        """
+        """
+        raise NotImplemented("Soon")
+
+    @classmethod
     def setIndex(cls, index):
         """
         """
@@ -59,16 +65,17 @@ class Es:
         """
         cls._es.setDoctType(doc_type)
 
-    @classmethod
-    def setOffer(cls, offer, pre_save_fn=None):
+    def __init__(self, merliObj):
         """
         """
-        cls._offer=offer
-        if pre_save_fn:
-            cls._offer=pre_save_fn(offer)
+        self.merli=MerliOffer(merliObj)
 
-    @classmethod
-    def save(cls):
+    def save(self):
         """
         """
-        cls._es.save(cls._offer)
+        obj=copy.deepcopy(self.merli.toDict)
+        obj.pop("raw")
+        obj.pop("_fields")
+        obj.pop("_raw_fields")
+        obj.pop("_raw_fields_count")
+        cls._es.save(obj)

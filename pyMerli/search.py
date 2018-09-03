@@ -34,7 +34,8 @@ class Request:
         self.url=_url
         self.metadata["request"]=_metaDict
 
-    def offers(self, limit=0, description=True, question=True, no_token=True):
+    def offers(self, limit=0, description=True, question=True,
+                     categories=True, no_token=True):
         """
         """
         session=requests.Session()
@@ -63,6 +64,8 @@ class Request:
                     result["questions"]=[]
                     for question in Offer.questions(item_id):
                         result["questions"].append(question)
+                if categories:
+                    result["categories"]=Offer.categories(result["category_id"])
                 yield result
                 if limit and limit <= item_count:break
             self.offset=paging["offset"]+paging["limit"]

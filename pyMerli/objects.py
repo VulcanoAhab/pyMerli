@@ -1,5 +1,7 @@
 
 import re
+import json
+import copy
 import string
 from datetime import datetime
 from dateutil.parser import parse as date_parse
@@ -11,16 +13,16 @@ class Parser:
     _cloud=re.compile("([^{}\s]+[\S]+[^{}\s]+)|([\w\d]+)".format(
                                             _puncs, _puncs), re.M)
     @classmethod
-    def world_list(cls, text_in):
+    def word_list(cls, text_in):
         """
         """
         word_list=[]
-        tuple_list=cls._cound.findall(text_in.lower())
+        tuple_list=cls._cloud.findall(text_in.lower())
         for tup in tuple_list:
             if not any(tup):continue
-            if tup[0]:word_list.append(tup[0])
+            if tup[0] and len(tup[0])>3:word_list.append(tup[0])
             else:
-                if tup[1]:word_list.append(tup[1])
+                if tup[1] and len(tup[1])>3:word_list.append(tup[1])
         return word_list
 
     def __init__(self, raw_obj):
@@ -32,22 +34,31 @@ class Parser:
     def _process(self):
         """
         """
-        self._fields=[]
-        self._fields_count=0
+        self._raw_fields=[]
+        self._raw_fields_count=0
         for key,value in self.raw.items():
             try:
                 parsed=getattr(self, key+"_parser")(value)
                 setattr(self, key, parsed)
             except AttributeError:
                 setattr(self, key, value)
-            self._fields.append(key)
-            self._fields_count+=1
+            self._raw_fields.append(key)
+            self._raw_fields_count+=1
 
     @property
     def toDict(self):
         """
         """
-        return self.__dict__
+        full_obj=copy.deepcopy(self.__dict__)
+        full_obj.pop("raw")
+        return full_obj
+
+    @property
+    def _fields(self):
+        """
+        """
+        return [f for f in self.__dict__
+                if f not in ["raw", "_raw_fields", "_raw_fields_count"]]
 
 
 class MerliOffer(Parser):
@@ -66,39 +77,39 @@ class MerliOffer(Parser):
     def title_parser(self, value):
         """
         """
-        self.title_cloud=self.word_cloud(self.raw["title"])
-        return self.raw["title"]
+        self.title_cloud=self.word_list(self.raw["title"])
+        return value
 
     def attributes_parser(self, value):
         """
         """
         attrs=[]
-        for attr in self.raw["attributes"]:
+        for attr in value:
             key=attr["id"].lower()
             value=attr["value_name"]
             setattr(self, key, value)
             attrs.append(key)
-        return "|".join(sorted(attrs))
+        return "|".join([getattr(self, k) for k in sorted(attrs)])
 
     def site_id_parser(self, value):
         """
         """
-        return self.raw["site_id"].lower()
+        return value.lower()
 
     def currency_id_parser(self, value):
         """
         """
-        return self.raw["currency_id"].lower()
+        return value.lower()
 
     def stop_time_parser(self, value):
         """
         """
-        return date_parse(self.raw["stop_time"])
+        return date_parse(value)
 
     def reviews_parser(self, value):
         """
         """
-        revis=self.raw["reviews"]
+        revis=value
         self.reviews_total=revis["total"]
         self.reviews_ratio=revis["rating_average"]
         return str(self.reviews_ratio)+"|"+str(self.reviews_total)
@@ -106,7 +117,7 @@ class MerliOffer(Parser):
     def installments_parser(self, value):
         """
         """
-        insta=self.raw["installments"]
+        insta=value
         self.installments_amount=insta["amount"]
         self.installments_quantity=insta["quantity"]
         self.installments_currency=insta["currency_id"].lower()
@@ -118,13 +129,13 @@ class MerliOffer(Parser):
     def seller_parser(self, value):
         """
         """
-        self.seller_id=self.raw["seller"]["id"]
-        return self.raw["seller"]["id"]
+        self.seller_id=value["id"]
+        return value["id"]
 
     def address_parser(self, value):
         """
         """
-        addr=self.raw["address"]
+        addr=value
         self.location_state_id=addr["state_id"].lower()
         self.location_state_name=addr["state_name"].lower()
         self.location_city_id=addr["city_id"]
@@ -134,7 +145,7 @@ class MerliOffer(Parser):
     def shipping_parser(self, value):
         """
         """
-        ships=self.raw["shipping"]
+        ships=value
         self.free_shipping=ships["free_shipping"]
         self.shipping_mode=ships["mode"]
         return str(self.free_shipping)+"|"+self.shipping_mode
@@ -142,7 +153,7 @@ class MerliOffer(Parser):
     def seller_address_parser(self, value):
         """
         """
-        saddr=self.raw["seller_address"]
+        saddr=value
         self.seller_country_name=saddr["country"]["name"].lower()
         self.seller_country_id=saddr["country"]["id"].lower()
         self.seller_city_name=saddr["city"]["name"].lower()
@@ -157,13 +168,12 @@ class MerliOffer(Parser):
     def description_parser(self, value):
         """
         """
-        return MerliDescription(self.raw["description"])
+        return MerliDescription(value)
 
     def questions_parser(self, value):
         """
         """
-        return MerliQuestion(self.raw["questions"])
-
+        return MerliQuestion(value)
 
 
 class MerliDescription(Parser):
@@ -174,12 +184,18 @@ class MerliDescription(Parser):
         """
         super().__init__(raw_obj)
 
+    def __repr__(self):
+        """
+        """
+        return "<{}:{}...>".format(self.__class__.__name__,
+                                        self.plain_text[:20])
+
     def plain_text_parser(self, value):
         """
         """
-        self.plain_text_cloud=self.word_list(self.raw["plain_text"])
+        self.plain_text_cloud=self.word_list(value)
         self.mention_channels=False #machine learning - ??
-        return self.raw["plain_text"]
+        return value
 
     def date_created_parser(self, value):
         """
@@ -206,30 +222,37 @@ class MerliQuestion(Parser):
         """
         super().__init__(raw_obj)
 
+    def __repr__(self):
+        """
+        """
+        return "<{}:{}...>".format(self.__class__.__name__, self.text[:20])
+
+    def text_parser(self, value):
+        """
+        """
+        self.text_cloud=self.word_list(value)
+        return value
+
     def date_created_parser(self, value):
         """
         """
-        return date_parse(self._raw["date_created"])
+        return date_parse(value)
 
     def status_parser(self, value):
         """
         """
-        return self.raw["status"].lower()
+        return value.lower()
 
     def answer_parser(self, value):
         """
         """
-        answer_obj=self.raw["answer"]
+        answer_obj=value
         answer_obj["status"]=answer_obj["status"].lower()
         answer_obj["date_created"]=date_parse(answer_obj["date_created"])
         answer_obj["text_cloud"]=self.world_list(answer_obj["text"])
         return answer_obj
 
-    def text_parser(self, value):
-        """
-        """
-        self.text_cloud=self.world_list(self.raw["text"])
-        return self.raw["text"]
+
 
 
 class MerliUser:

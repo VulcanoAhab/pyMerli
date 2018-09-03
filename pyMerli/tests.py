@@ -7,8 +7,8 @@ from kafka import KafkaProducer,KafkaConsumer
 
 from config import FromFile
 from search import Request
-from objects import MerliOffer
-from extras.samples import RAW_OBJ
+from objects import MerliOffer, MerliDescription, MerliQuestion
+from extras.samples import RAW_OBJ, RAW_OBJ_DESC, RAW_OBJ_QUESTIONS
 
 
 class SearchRequest(unittest.TestCase):
@@ -103,12 +103,59 @@ class Objects(unittest.TestCase):
         """
         """
         self.offer=MerliOffer(RAW_OBJ)
+        self.description=MerliDescription(RAW_OBJ_DESC)
+        self.question=MerliQuestion(RAW_OBJ_QUESTIONS["questions"][0])
+        self.offer_fields=[
+            'id', 'site_id', 'title_cloud', 'title', 'seller_id',
+            'seller', 'price', 'currency_id', 'available_quantity',
+            'sold_quantity', 'buying_mode', 'listing_type_id', 'stop_time',
+            'condition', 'permalink', 'thumbnail', 'accepts_mercadopago',
+            'installments_amount', 'installments_quantity',
+            'installments_currency', 'installments', 'location_state_id',
+            'location_state_name', 'location_city_id', 'location_city_name',
+            'address', 'free_shipping', 'shipping_mode', 'shipping',
+            'seller_country_name', 'seller_country_id', 'seller_city_name',
+            'seller_city_id', 'seller_state_name', 'seller_state_id',
+            'seller_zipcode', 'seller_address', 'brand', 'item_condition',
+            'model', 'attributes', 'original_price', 'category_id',
+            'official_store_id', 'catalog_product_id', 'reviews_total',
+            'reviews_ratio', 'reviews', 'tags'
+        ]
+        self.description_fields=[
+            'text', 'plain_text_cloud', 'mention_channels',
+            'plain_text', 'last_updated', 'date_created', 'snapshot'
+        ]
+        self.question_fields=[
+            'date_created', 'item_id', 'seller_id', 'status',
+            'text_cloud', 'text', 'id', 'answer'
+        ]
 
     def test_offer(self):
         """
         """
-        print(self.offer)
+        #object struct
+        self.assertTrue(isinstance(self.offer, MerliOffer))
+        self.assertEqual(self.offer_fields, self.offer._fields,
+                              "[-] Object fields match fail")
+        #some control fields
+        self.assertEqual(self.offer.model, "PK1000", "[-] Fail model value")
+        self.assertEqual(self.offer.title, "Amplificador Para Fone "\
+                                "De Ouvido Pakrys Pk-1000 Power Play",
+                                        "[-] Fail offer title match.")
 
+    def test_description(self):
+        """
+        """
+
+        self.assertEqual(self.description_fields,
+                         self.description._fields,
+                         "[-] Object fields match fail")
+
+    def test_question(self):
+        """
+        """
+        self.assertEqual(self.question_fields, self.question._fields,
+                                      "[-] Object fields match fail")
 
 
 if __name__ == "__main__":
