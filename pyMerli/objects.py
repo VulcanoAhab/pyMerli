@@ -74,6 +74,17 @@ class MerliOffer(Parser):
         """
         return "<{}:{}>".format(self.__class__.__name__, self.id)
 
+    @property
+    def toDict(self):
+        """
+        """
+        offer=copy.deepcopy(self.__dict__)
+        offer["description"]=copy.deepcopy(self.description.toDict)
+        offer["categories"]=copy.deepcopy(self.categories.toDict)
+        offer["questions"]=copy.deepcopy(self.questions.toDict)
+        full_obj.pop("raw")
+        return full_obj
+
     def title_parser(self, value):
         """
         """
@@ -170,6 +181,11 @@ class MerliOffer(Parser):
         """
         return MerliDescription(value)
 
+    def categories_parser(self, value):
+        """
+        """
+        return MerliCategories(value)
+
     def questions_parser(self, value):
         """
         """
@@ -216,7 +232,6 @@ class MerliDescription(Parser):
 class MerliQuestion(Parser):
     """
     """
-
     def __init__(self, raw_obj):
         """
         """
@@ -253,6 +268,32 @@ class MerliQuestion(Parser):
         return answer_obj
 
 
+class MerliCategories(Parser):
+    """
+    """
+    def __init__(self, raw_obj):
+        """
+        """
+        super().__init__(raw_obj)
+
+    def __repr__(self):
+        """
+        """
+        return "<{}:{}...>".format(self.__class__.__name__,
+                                self.categories_names[:20])
+
+    def path_from_root_parser(self, value):
+        """
+        """
+        names=[]
+        for itemDict in value:names.append(itemDict["name"].lower())
+        self.categories_names="|".join(names)
+        return value
+
+    def name_parser(self, value):
+        """
+        """
+        return value.lower()
 
 
 class MerliUser:
