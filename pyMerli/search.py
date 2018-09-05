@@ -1,7 +1,7 @@
 import time
 import requests
 from datetime import datetime
-from item import Offer
+from pyMerli.item import Offer
 
 class Request:
     """
