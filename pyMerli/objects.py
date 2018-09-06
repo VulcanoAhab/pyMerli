@@ -208,7 +208,7 @@ class MerliDescription(Parser):
     """
     """
     _req_fields=[
-        {"field_name":"plain_text", "deafult":""}
+        {"field_name":"plain_text", "default":""}
     ]
     def __init__(self, raw_obj):
         """
