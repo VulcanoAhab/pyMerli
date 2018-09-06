@@ -212,7 +212,7 @@ class MerliDescription(Parser):
     """
     """
     _req_fields=[
-        {"field_name":"plain_text", "default":""}
+        {"field_name":"plain_text", "default":""},
     ]
     def __init__(self, raw_obj):
         """
@@ -281,9 +281,12 @@ class MerliQuestion(Parser):
         """
         """
         answer_obj=value
-        answer_obj["status"]=answer_obj["status"].lower()
-        answer_obj["date_created"]=date_parse(answer_obj["date_created"])
-        answer_obj["text_cloud"]=self.world_list(answer_obj["text"])
+        if answer_obj["status"]:
+            answer_obj["status"]=answer_obj["status"].lower()
+        if answer_obj["date_created"]:
+            answer_obj["date_created"]=date_parse(answer_obj["date_created"])
+        if answer_obj["text"]:
+            answer_obj["text_cloud"]=self.world_list(answer_obj["text"])
         return answer_obj
 
 
