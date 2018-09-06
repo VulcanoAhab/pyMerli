@@ -12,6 +12,8 @@ class Parser:
     _puncs=list(string.punctuation)
     _cloud=re.compile("([^{}\s]+[\S]+[^{}\s]+)|([\w\d]+)".format(
                                             _puncs, _puncs), re.M)
+    _req_fields=[]
+
     @classmethod
     def word_list(cls, text_in):
         """
@@ -30,6 +32,9 @@ class Parser:
         """
         self.raw=raw_obj
         self._process()
+        for req in self._req_fields:
+            if req["field_name"] not in self.__dict__:
+                setattr(self, req["field_name"], req["default"])
 
     def _process(self):
         """
@@ -202,6 +207,9 @@ class MerliOffer(Parser):
 class MerliDescription(Parser):
     """
     """
+    _req_fields=[
+        {"field_name":"plain_text", "deafult":""}
+    ]
     def __init__(self, raw_obj):
         """
         """
