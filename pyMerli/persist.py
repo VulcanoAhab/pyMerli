@@ -31,7 +31,7 @@ class S3:
     def save(self, key_field):
         """
         """
-        self.s3.uploadJson(self.merli.toDict, getattr(self.merli, key_field))
+        self.s3.uploadJson(self.merli.toDict, key_field)
         self.postSave.message="[+] S3 Persist Bucket: {} | Key: {}".format(
                                                     self._bucket, key_field)
 

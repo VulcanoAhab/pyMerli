@@ -86,7 +86,7 @@ class MerliOffer(Parser):
         offer=copy.deepcopy(self.__dict__)
         offer["description"]=copy.deepcopy(self.description.toDict)
         offer["categories"]=copy.deepcopy(self.categories.toDict)
-        offer["questions"]=copy.deepcopy(self.questions.toDict)
+        offer["questions"]=[copy.deepcopy(q.toDict) for q in self.questions]
         full_obj.pop("raw")
         return full_obj
 
