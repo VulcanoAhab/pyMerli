@@ -205,7 +205,7 @@ class MerliOffer(Parser):
     def questions_parser(self, value):
         """
         """
-        return MerliQuestion(value)
+        return [MerliQuestion(q) for q in value]
 
 
 class MerliDescription(Parser):
