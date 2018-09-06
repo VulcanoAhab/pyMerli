@@ -125,6 +125,9 @@ class MerliOffer(Parser):
         """
         """
         revis=value
+        self.reviews_total=0
+        self.reviews_ratio=0
+        if not revis:return "no_reviews"
         self.reviews_total=revis["total"]
         self.reviews_ratio=revis["rating_average"]
         return str(self.reviews_ratio)+"|"+str(self.reviews_total)
