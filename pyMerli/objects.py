@@ -100,7 +100,9 @@ class MerliOffer(Parser):
             value=attr["value_name"]
             setattr(self, key, value)
             attrs.append(key)
-        return "|".join([getattr(self, k) for k in sorted(attrs)])
+        if attrs:
+            return "|".join([getattr(self, k) for k in sorted(attrs)])
+        return "no_attributes"
 
     def site_id_parser(self, value):
         """
