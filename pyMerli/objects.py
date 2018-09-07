@@ -281,6 +281,7 @@ class MerliQuestion(Parser):
         """
         """
         answer_obj=value
+        if not answer_obj:return "no_aswer"
         if answer_obj["status"]:
             answer_obj["status"]=answer_obj["status"].lower()
         if answer_obj["date_created"]:
