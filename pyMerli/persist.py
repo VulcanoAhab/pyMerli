@@ -41,8 +41,9 @@ class S3:
             raise TypeError ("Type %s not serializable" % type(obj))
         data=self.merli.toDict
         self.s3.uploadJson(data, key_field, jsonFnSerializer=_json)
-        self.postSave.message="[+] S3 Persist Bucket: {} | Key: {}".format(
-                                                    self._bucket, key_field)
+        return {"status":"sucess", 
+                "obj_id":key_field,
+                "msg":""}
 
 class Es:
     """
