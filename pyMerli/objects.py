@@ -3,7 +3,7 @@ import re
 import json
 import copy
 import string
-from datetime import datetime
+from datetime import datetime,
 from dateutil.parser import parse as date_parse
 
 class Parser:
@@ -30,7 +30,7 @@ class Parser:
     def __init__(self, raw_obj):
         """
         """
-        self.raw=raw_obj
+        self.raw=copy.deepcopy(raw_obj)
         self._process()
         for req in self._req_fields:
             if req["field_name"] not in self.__dict__:
