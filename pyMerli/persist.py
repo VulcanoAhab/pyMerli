@@ -1,3 +1,4 @@
+from datetime import datetime,date
 from pyMerli.objects import MerliOffer
 from custodi.smallBoto import S3Bucket
 from custodi.smallElastic import Basics
@@ -31,7 +32,13 @@ class S3:
     def save(self, key_field):
         """
         """
-        self.s3.uploadJson(self.merli.toDict, key_field)
+        def _date_json(obj):
+            """
+            """
+            if isinstance(obj, (datetime, date)):return obj.isoformat()
+            raise TypeError ("Type %s not serializable" % type(obj))
+        data=json.dumps(self.merli.toDict, default=_date_json)
+        self.s3.uploadFileData(data, key_field)
         self.postSave.message="[+] S3 Persist Bucket: {} | Key: {}".format(
                                                     self._bucket, key_field)
 
