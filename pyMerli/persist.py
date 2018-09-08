@@ -1,3 +1,4 @@
+import json
 from datetime import datetime,date
 from pyMerli.objects import MerliOffer
 from custodi.smallBoto import S3Bucket
