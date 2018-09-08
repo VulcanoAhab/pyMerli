@@ -1,3 +1,4 @@
+import io
 import json
 from datetime import datetime,date
 from pyMerli.objects import MerliOffer
@@ -33,13 +34,13 @@ class S3:
     def save(self, key_field):
         """
         """
-        def _date_json(obj):
+        def _json(obj):
             """
             """
             if isinstance(obj, (datetime, date)):return obj.isoformat()
             raise TypeError ("Type %s not serializable" % type(obj))
-        data=json.dumps(self.merli.toDict, default=_date_json)
-        self.s3.uploadFileData(data, key_field)
+        data=self.merli.toDict
+        self.s3.uploadJson(data, key_field, jsonFnSerializer=_json)
         self.postSave.message="[+] S3 Persist Bucket: {} | Key: {}".format(
                                                     self._bucket, key_field)
 
