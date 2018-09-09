@@ -3,7 +3,7 @@ import re
 import json
 import copy
 import string
-from datetime import datetime,
+from datetime import datetime,date
 from dateutil.parser import parse as date_parse
 
 class Parser:
