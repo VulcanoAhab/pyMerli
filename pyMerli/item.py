@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 
 class Offer:
     """
@@ -14,6 +15,8 @@ class Offer:
     _qa_url="https://api.mercadolibre.com/questions/"\
             "search?item_id={item_id}&offset={offset}"
     _categories_url="http://api.mercadolibre.com/categories/{category_id}"
+
+    _item_url="https://api.mercadolibre.com/items/{item_id}"
 
     @classmethod
     def description(cls, item_id):
@@ -49,3 +52,16 @@ class Offer:
         if response.status_code in [404,]:return {"error":"not_found"}
         response.raise_for_status()
         return response.json()
+
+    @classmethod
+    def is_alive(cls, item_id):
+        """
+        """
+        _url=cls._item_url.format(item_id=item_id)
+        response=requests.get(_url, headers=cls._headers)
+        if response.status_code in [404,]:return {"error":"not_found"}
+        response.raise_for_status()
+        item=response.json()
+        expire=item["stop_time"]
+        mode=item["buying_mode"]
+        return {"status":"", "expire":expire, "mode":mode}
