@@ -60,10 +60,12 @@ class Request:
                 if description:
                     item_id=result["id"]
                     result["description"]=Offer.description(item_id)
+                    time.sleep(0.001)
                 if question:
                     result["questions"]=[]
                     for question in Offer.questions(item_id):
                         result["questions"].append(question)
+                        time.sleep(0.001)
                 if categories:
                     result["categories"]=Offer.categories(result["category_id"])
                 yield result

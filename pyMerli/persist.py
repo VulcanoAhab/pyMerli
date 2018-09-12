@@ -38,10 +38,9 @@ class S3:
             """
             """
             if isinstance(obj, (datetime, date)):return obj.isoformat()
-            raise TypeError ("Type %s not serializable" % type(obj))
         data=self.merli.toDict
         self.s3.uploadJson(data, key_field, jsonFnSerializer=_json)
-        return {"status":"sucess", 
+        return {"status":"sucess",
                 "obj_id":key_field,
                 "msg":""}
 
