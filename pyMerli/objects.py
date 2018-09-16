@@ -143,7 +143,7 @@ class MerliOffer(Parser):
         insta=value
         self.installments_amount=0
         self.installments_quantity=0
-        self.installments_currency=0
+        self.installments_currency=""
         if not insta: return "no_installments"
         self.installments_amount=insta["amount"]
         self.installments_quantity=insta["quantity"]
@@ -205,6 +205,7 @@ class MerliOffer(Parser):
     def questions_parser(self, value):
         """
         """
+        if not value:return []
         return [MerliQuestion(q) for q in value]
 
 
