@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 import yaml
 import time
@@ -6,7 +8,7 @@ from kafka.errors import KafkaError
 from kafka import KafkaProducer,KafkaConsumer
 
 from config import FromFile
-from search import Request
+from api import Search
 from objects import MerliOffer, MerliDescription, MerliQuestion
 from extras.samples import RAW_OBJ, RAW_OBJ_DESC, RAW_OBJ_QUESTIONS
 
@@ -21,8 +23,8 @@ class SearchRequest(unittest.TestCase):
         #kafka send job test
         self.remote_config=FromFile("pyMerli/extras/config_dev.yml").settings
 
-        #search test
-        self.merli=Request("tv box", "MLB", 1000, 0)
+        #search test • keyword, country_id, category_id - options dict
+        self.search=Search("tvbox", "MLB", 1000, limit=25)
         self.item_keys=["id",
                         "site_id",
                         "title",
@@ -51,19 +53,20 @@ class SearchRequest(unittest.TestCase):
                         "tags",
                         "request",
                         "description",
-                        "questions"]
+                        "questions",
+                        ]
 
     def test_offers(self):
         """
         """
         #items get
-        items=list(self.merli.offers(limit=50))
+        items=list(self.search.offers())[0]
         self.assertTrue(len(items))
         #item request & morphology
-        item=items[0]
-        self.assertEqual(item["request"]["item_count"], 50)
-        self.assertEqual(item["request"]["page_count"], 0)
-        self.assertEqual(set(item.keys()), set(self.item_keys))
+        item=items[0] #first result - item count 1
+        self.assertEqual(item["metadata"]["item_count"], 1)
+        self.assertEqual(item["metadata"]["page_count"], 0)
+        #self.assertEqual(set(item.keys()), set(self.item_keys))
 
     def test_kafka(self):
         """
@@ -106,28 +109,28 @@ class Objects(unittest.TestCase):
         self.description=MerliDescription(RAW_OBJ_DESC)
         self.question=MerliQuestion(RAW_OBJ_QUESTIONS["questions"][0])
         self.offer_fields=[
-            'id', 'site_id', 'title_cloud', 'title', 'seller_id',
-            'seller', 'price', 'currency_id', 'available_quantity',
-            'sold_quantity', 'buying_mode', 'listing_type_id', 'stop_time',
-            'condition', 'permalink', 'thumbnail', 'accepts_mercadopago',
-            'installments_amount', 'installments_quantity',
-            'installments_currency', 'installments', 'location_state_id',
-            'location_state_name', 'location_city_id', 'location_city_name',
-            'address', 'free_shipping', 'shipping_mode', 'shipping',
-            'seller_country_name', 'seller_country_id', 'seller_city_name',
-            'seller_city_id', 'seller_state_name', 'seller_state_id',
-            'seller_zipcode', 'seller_address', 'brand', 'item_condition',
-            'model', 'attributes', 'original_price', 'category_id',
-            'official_store_id', 'catalog_product_id', 'reviews_total',
-            'reviews_ratio', 'reviews', 'tags'
+            "id", "site_id", "title_cloud", "title", "seller_id",
+            "seller", "price", "currency_id", "available_quantity",
+            "sold_quantity", "buying_mode", "listing_type_id", "stop_time",
+            "condition", "permalink", "thumbnail", "accepts_mercadopago",
+            "installments_amount", "installments_quantity",
+            "installments_currency", "installments", "location_state_id",
+            "location_state_name", "location_city_id", "location_city_name",
+            "address", "free_shipping", "shipping_mode", "shipping",
+            "seller_country_name", "seller_country_id", "seller_city_name",
+            "seller_city_id", "seller_state_name", "seller_state_id",
+            "seller_zipcode", "seller_address", "brand", "item_condition",
+            "model", "attributes", "original_price", "category_id",
+            "official_store_id", "catalog_product_id", "reviews_total",
+            "reviews_ratio", "reviews", "tags"
         ]
         self.description_fields=[
-            'text', 'plain_text_cloud', 'mention_channels',
-            'plain_text', 'last_updated', 'date_created', 'snapshot'
+            "text", "plain_text_cloud", "mention_channels",
+            "plain_text", "last_updated", "date_created", "snapshot"
         ]
         self.question_fields=[
-            'date_created', 'item_id', 'seller_id', 'status',
-            'text_cloud', 'text', 'id', 'answer'
+            "date_created", "item_id", "seller_id", "status",
+            "text_cloud", "text", "id", "answer"
         ]
 
     def test_offer(self):

@@ -12,25 +12,26 @@ class Search:
               "&category={category_id}&offset={offset}"
     _str_date="%d-%m-%YT%H:%M"
 
-    def __init__(self, keyword, country_id, category_id, offset=0, **kwargs):
+    def __init__(self, keyword, country_id, category_id, **kwargs):
         """
+        ML page size default is 50
         """
         self.page_count=0
         self.item_count=0
-        self.offset=offset
         self.keyword=keyword
         self.country_id=country_id
         self.category_id=category_id
-        self.desccription=kwargs.get("description", True)
+        self.description=kwargs.get("description", True)
         self.questions=kwargs.get("questions", True)
         self.categories=kwargs.get("categories", True)
         self.no_token=kwargs.get("no_token", True)
+        self.offset=kwargs.get("offset",0)
         self.limit=kwargs.get("limit", 0)
         self.session=requests.Session()
         self.session.headers={
             "Accept-Encoding": "gzip, deflate",
             "Accept": "*/*",
-            "Connection": "keep-alive"
+            "Connection": "keep-alive",
             "User-Agent":"pyMerli"
         }
         self.metadata={
@@ -73,12 +74,15 @@ class Search:
                 for result in results: yield result
             else:
                 yield results
-            if self.limit and self.limit <= self.item_count:break
             self.offset=paging["offset"]+paging["limit"]
+            #results limit
             if total <= self.offset:break
+            #client limit
+            if self.limit and self.limit < self.offset:break
+            #no token limit
             if self.no_token and self.offset>1000:break
-            time.sleep(0.01)
             self.page_count+=1
+            time.sleep(0.0001)
 
     def enrich_results(self, results):
         """
@@ -87,6 +91,7 @@ class Search:
         captured_at=datetime.utcnow().strftime(self._str_date)
         for result in results:
             self.item_count+=1
+            result["metadata"]={}
             result["metadata"]["url"]=self.url
             result["metadata"]["captured_at"]=captured_at
             result["metadata"]=copy.deepcopy(self.metadata)
@@ -95,15 +100,14 @@ class Search:
             if self.description:
                 item_id=result["id"]
                 result["description"]=Offer.description(item_id)
-                time.sleep(0.001)
             if self.questions:
                 result["questions"]=[]
                 for question in Offer.questions(item_id):
                     result["questions"].append(question)
-                    time.sleep(0.001)
             if self.categories:
                 result["categories"]=Offer.categories(result["category_id"])
             parsed_results.append(result)
+            if self.limit and self.limit <= self.item_count:break
         return parsed_results
 
 class User:
