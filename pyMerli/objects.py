@@ -221,6 +221,11 @@ class MerliOffer(Parser):
         if not value:return []
         return [MerliQuestion(q) for q in value]
 
+    def user_profile_parser(self, value):
+        """
+        """
+        return MerliUser(value)
+
 
 class MerliDescription(Parser):
     """
