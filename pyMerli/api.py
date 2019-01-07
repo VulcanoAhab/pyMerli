@@ -21,9 +21,10 @@ class Search:
         self.keyword=keyword
         self.country_id=country_id
         self.category_id=category_id
+        self.user_profile=kwargs.get("user_profile", True)
         self.description=kwargs.get("description", True)
-        self.questions=kwargs.get("questions", True)
         self.categories=kwargs.get("categories", True)
+        self.questions=kwargs.get("questions", True)
         self.no_token=kwargs.get("no_token", True)
         self.offset=kwargs.get("offset",0)
         self.limit=kwargs.get("limit", 0)
@@ -106,6 +107,8 @@ class Search:
                     result["questions"].append(question)
             if self.categories:
                 result["categories"]=Offer.categories(result["category_id"])
+            if self.user_profile:
+                result["user_profile"]=User.details(result["user"]["id"])
             parsed_results.append(result)
             if self.limit and self.limit <= self.item_count:break
         return parsed_results

@@ -65,6 +65,19 @@ class Parser:
         return [f for f in self.__dict__
                 if f not in ["raw", "_raw_fields", "_raw_fields_count"]]
 
+class MerliPage(Parser):
+    """
+    """
+    def __init__(self, raw_obj):
+        """
+        """
+        super().__init__(raw_obj)
+
+    def __repr__(self):
+        """
+        """
+        return "<{}:{}>".format(self.__class__.__name__,
+                    self.metadata["request"]["keyword"])
 
 class MerliOffer(Parser):
     """
@@ -320,7 +333,30 @@ class MerliCategories(Parser):
         return value.lower()
 
 
-class MerliUser:
+class MerliUser(Parser):
     """
     """
-    pass
+    def __init__(self, raw_obj):
+        """
+        """
+        super().__init__(raw_obj)
+
+    def __repr__(self):
+        """
+        """
+        return "<{}:{}>".format(self.__class__.__name__,
+                                self.nickname)
+
+    def registration_date_parser(self, value):
+        """
+        """
+        return date_parse(value)
+
+    def address_parser(self, value):
+        """
+        """
+        self.city=value["city"]
+        self.state=value["state"]
+        self.location=value["address"]
+        self.zip=value["zip_code"]
+        return value
