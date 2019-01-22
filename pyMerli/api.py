@@ -108,7 +108,7 @@ class Search:
             if self.categories:
                 result["categories"]=Offer.categories(result["category_id"])
             if self.user_profile:
-                result["user_profile"]=User.details(result["user"]["id"])
+                result["user_profile"]=User.details(result["seller"]["id"])
             parsed_results.append(result)
             if self.limit and self.limit <= self.item_count:break
         return parsed_results
