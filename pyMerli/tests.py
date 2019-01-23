@@ -60,10 +60,10 @@ class SearchRequest(unittest.TestCase):
         """
         """
         #items get
-        items=list(self.search.offers())[0]
-        self.assertTrue(len(items))
+        items_page=list(self.search.offers())[0]
+        self.assertTrue(len(items_page))
         #item request & morphology
-        item=items[0] #first result - item count 1
+        item=items_page[0] #first result - item count 1
         self.assertEqual(item["metadata"]["item_count"], 1)
         self.assertEqual(item["metadata"]["page_count"], 0)
         #self.assertEqual(set(item.keys()), set(self.item_keys))
