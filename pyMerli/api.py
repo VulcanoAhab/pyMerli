@@ -28,6 +28,7 @@ class Search:
         self.no_token=kwargs.get("no_token", True)
         self.offset=kwargs.get("offset",0)
         self.limit=kwargs.get("limit", 0)
+        self.tags=kwargs.get("tags",{})
         self.session=requests.Session()
         self.session.headers={
             "Accept-Encoding": "gzip, deflate",
@@ -69,6 +70,7 @@ class Search:
             jsonResponse=response.json()
             paging=jsonResponse["paging"]
             total=paging["total"]
+            self.metadata["tags"]=self.tags
             self.metadata["request"]["total"]=total
             results=self.enrich_results(jsonResponse["results"])
             if byOffer:
@@ -92,10 +94,9 @@ class Search:
         captured_at=datetime.utcnow().strftime(self._str_date)
         for result in results:
             self.item_count+=1
-            result["metadata"]={}
-            result["metadata"]["url"]=self.url
-            result["metadata"]["captured_at"]=captured_at
             result["metadata"]=copy.deepcopy(self.metadata)
+            result["metadata"]["page_url"]=self.url
+            result["metadata"]["captured_at"]=captured_at
             result["metadata"]["item_count"]=self.item_count
             result["metadata"]["page_count"]=self.page_count
             if self.description:
