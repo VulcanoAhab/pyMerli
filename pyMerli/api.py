@@ -9,7 +9,7 @@ class Search:
     """
     _search_url="https://api.mercadolibre.com/sites/"\
               "{country_id}/search?q={keyword}"\
-              "&category={category_id}&offset={offset}"
+              "&category={category_id}&offset={offset}&limit={page_size}"
     _str_date="%d-%m-%YT%H:%M"
 
     def __init__(self, keyword, country_id, category_id, **kwargs):
@@ -28,6 +28,7 @@ class Search:
         self.no_token=kwargs.get("no_token", True)
         self.offset=kwargs.get("offset",0)
         self.limit=kwargs.get("limit", 0)
+        self.page_size=kwargs.get("page_size", 50)
         self.tags=kwargs.get("tags",{})
         self.session=requests.Session()
         self.session.headers={
@@ -55,12 +56,13 @@ class Search:
         _url=self._search_url.format(country_id=self.country_id,
                                      keyword=self.keyword,
                                      category_id=self.category_id,
-                                     offset=self.offset)
+                                     offset=self.offset,
+                                     page_size=self.page_size)
 
 
         self.url=_url
 
-    def offers(self, byOffer=False):
+    def offers(self, byOffer=False, enrich=True):
         """
         """
         while (True):
@@ -72,11 +74,23 @@ class Search:
             total=paging["total"]
             self.metadata["tags"]=self.tags
             self.metadata["request"]["total"]=total
-            results=self.enrich_results(jsonResponse["results"])
-            if byOffer:
-                for result in results: yield result
+            if enrich:
+                if byOffer:
+                    for base_result in jsonResponse["results"]:
+                        results = self.enrich_results([base_result])
+                        for result in results:
+                            yield result
+                else:
+                    results=self.enrich_results(jsonResponse["results"])
+                    yield results
             else:
-                yield results
+                results = jsonResponse["results"]
+                if byOffer:
+                    for result in results:
+                        yield result
+                else:
+                    yield results
+                    
             self.offset=paging["offset"]+paging["limit"]
             #results limit
             if total <= self.offset:break
