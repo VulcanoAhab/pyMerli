@@ -62,7 +62,7 @@ class Search:
 
         self.url=_url
 
-    def offers(self, byOffer=False):
+    def offers(self, byOffer=False, enrich=True):
         """
         """
         while (True):
@@ -74,11 +74,23 @@ class Search:
             total=paging["total"]
             self.metadata["tags"]=self.tags
             self.metadata["request"]["total"]=total
-            results=self.enrich_results(jsonResponse["results"])
-            if byOffer:
-                for result in results: yield result
+            if enrich:
+                if byOffer:
+                    for base_result in jsonResponse["results"]:
+                        results = self.enrich_results([base_result])
+                        for result in results:
+                            yield result
+                else:
+                    results=self.enrich_results(jsonResponse["results"])
+                    yield results
             else:
-                yield results
+                results = jsonResponse["results"]
+                if byOffer:
+                    for result in results:
+                        yield result
+                else:
+                    yield results
+                    
             self.offset=paging["offset"]+paging["limit"]
             #results limit
             if total <= self.offset:break
