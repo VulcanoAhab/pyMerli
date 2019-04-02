@@ -182,7 +182,18 @@ class Categories:
             "otras categorías",
             "mais Categorias"
         ]},
+        {
+        "number_id":"3281",
+        "aka":[
+            "filmes e seriados",
+        ]},
+        {
+        "number_id":"1168",
+        "aka":[
+            "música y películas",
+        ]},
     ]
+
     @classmethod
     def category_id(cls, category_name):
         """
