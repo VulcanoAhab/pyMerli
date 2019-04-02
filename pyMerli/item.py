@@ -62,6 +62,7 @@ class Offer:
         if response.status_code in [404,]:return {"error":"not_found"}
         response.raise_for_status()
         item=response.json()
-        expire=item["stop_time"]
-        mode=item["buying_mode"]
-        return {"status":"", "expire":expire, "mode":mode}
+        expire=item.get("stop_time")
+        mode=item.get("buying_mode")
+        status=item.get("status")
+        return {"status":status, "expire":expire, "mode":mode, "item":item}
