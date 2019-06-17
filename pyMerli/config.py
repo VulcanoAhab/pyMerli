@@ -192,6 +192,21 @@ class Categories:
         "aka":[
             "música y películas",
         ]},
+        {
+        "number_id":"1276",
+        "aka":[
+            "esportes e fitness",
+            "deportes y fitness",
+        ]},
+        {
+        "number_id":"1430",
+        "aka":[
+            "ropa, bolsas y calzado",
+            "ropa y accesorios",
+            "vestuario y calzado",
+            "ropa, zapatos y accesorios",
+            "calçados, roupas e bolsas",
+        ]}
     ]
 
     @classmethod
