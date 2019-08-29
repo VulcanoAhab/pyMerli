@@ -165,6 +165,12 @@ class Categories:
             "informática"
         ]},
         {
+        "number_id":"1144",
+        "aka":[
+            "games",
+            "consolas y videojuegos"
+        ]},
+        {
         "number_id":"5726",
         "aka":[
             "electrodomésticos y aires ac.",
