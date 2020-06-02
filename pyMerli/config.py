@@ -212,6 +212,30 @@ class Categories:
             "vestuario y calzado",
             "ropa, zapatos y accesorios",
             "calçados, roupas e bolsas",
+        ]},
+        {
+        "number_id":"1384",
+        "aka":[
+            "bebés",
+            "bebês",
+            "bebes",
+        ]},
+        {
+        "number_id":"1132"
+        "aka": [
+            "juegos y juguetes",
+            "brinquedos e hobbies",
+        ]},
+        {
+        "number_id":"12404",
+        "aka": [
+            "festas e lembrancinhas",
+        ]},
+        {
+        "number_id":"1953",
+        "aka": [
+            "otras categorías",
+            "mais categorias",
         ]}
     ]
 
