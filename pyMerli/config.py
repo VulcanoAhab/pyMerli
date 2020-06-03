@@ -221,7 +221,7 @@ class Categories:
             "bebes",
         ]},
         {
-        "number_id":"1132"
+        "number_id":"1132",
         "aka": [
             "juegos y juguetes",
             "brinquedos e hobbies",
