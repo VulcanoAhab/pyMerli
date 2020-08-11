@@ -212,6 +212,7 @@ class Categories:
             "vestuario y calzado",
             "ropa, zapatos y accesorios",
             "calçados, roupas e bolsas",
+            "calcados, roupas e bolsas",
         ]},
         {
         "number_id":"1384",
@@ -236,7 +237,15 @@ class Categories:
         "aka": [
             "otras categorías",
             "mais categorias",
-        ]}
+        ]},
+        {
+        "number_id":"1574",
+        "aka": [
+            "casa, móveis e decoração",
+            "casa, moveis e decoracao",
+            "hogar, muebles y jardín",
+            "hogar, muebles y jardin"
+        ]},
     ]
 
     @classmethod
