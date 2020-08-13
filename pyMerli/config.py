@@ -246,6 +246,24 @@ class Categories:
             "hogar, muebles y jardín",
             "hogar, muebles y jardin"
         ]},
+        {
+        "number_id":"5672",
+        "aka": [
+            "acessórios para veículos",
+            "acessorios para veiculos",
+        ]},
+        {
+        "number_id":"1499",
+        "aka": [
+            "indústria e comércio",
+            "industria e comercio",
+        ]},
+        {
+        "number_id":"264586",
+        "aka": [
+            "saúde",
+            "saude",
+        ]},
     ]
 
     @classmethod
