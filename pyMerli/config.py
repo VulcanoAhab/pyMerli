@@ -264,6 +264,12 @@ class Categories:
             "saúde",
             "saude",
         ]},
+        {
+        "number_id":"1367",
+        "aka": [
+            "antiguidades e colecoes",
+            "antiguidades e coleções",
+        ]},
     ]
 
     @classmethod
